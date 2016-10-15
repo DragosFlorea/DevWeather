@@ -98,9 +98,11 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LocationManager.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OpenWeatherMapProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +112,22 @@
     <None Include="DevWeather_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\01d.png" />
+    <Content Include="Assets\01n.png" />
+    <Content Include="Assets\02d.png" />
+    <Content Include="Assets\02n.png" />
+    <Content Include="Assets\03d.png" />
+    <Content Include="Assets\03n.png" />
+    <Content Include="Assets\04d.png" />
+    <Content Include="Assets\04n.png" />
+    <Content Include="Assets\09d.png" />
+    <Content Include="Assets\09n.png" />
+    <Content Include="Assets\10d.png" />
+    <Content Include="Assets\10n.png" />
+    <Content Include="Assets\11d.png" />
+    <Content Include="Assets\11n.png" />
+    <Content Include="Assets\13d.png" />
+    <Content Include="Assets\13n.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />

@@ -5,11 +5,26 @@
     xmlns:local="using:DevWeather"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Button x:Name="btnGetWeather" Content="GetWeather" HorizontalAlignment="Left" Height="199" Margin="139,103,0,0" VerticalAlignment="Top" Width="529"/>
-        <TextBlock x:Name="txtDisplayWeather" HorizontalAlignment="Left" Margin="907,103,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="124" Width="581"/>
-
-    </Grid>
+    mc:Ignorable="d" Loaded="Page_Loaded">
+    <StackPanel Background="HotPink">
+        <StackPanel  VerticalAlignment="Center">
+            <TextBlock x:Name="txtDisplayTemp" 
+                   HorizontalAlignment="Center"
+                   Foreground="White"
+                   FontSize="52"/>
+            <TextBlock x:Name="txtDisplayDescrp" 
+                   HorizontalAlignment="Center"
+                   Foreground="White"
+                   FontSize="35"/>
+            <TextBlock x:Name="txtDisplayLocation" 
+                   HorizontalAlignment="Center"
+                   Foreground="White"
+                   FontSize="25"
+                   TextWrapping="Wrap"/>
+        <Image Name="ResultImage" 
+               Width="200" 
+               Height="200" 
+               HorizontalAlignment="Center"/>
+    </StackPanel>
+    </StackPanel>
 </Page>

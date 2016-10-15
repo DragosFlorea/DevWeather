@@ -11,10 +11,12 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-
+// 0a08a218caa65034f65bba26714aec11
+//https://msdn.microsoft.com/en-us/windows/uwp/maps-and-location/get-location
 namespace DevWeather
 {
     /// <summary>
@@ -25,6 +27,27 @@ namespace DevWeather
         public MainPage()
         {
             this.InitializeComponent();
+        }
+
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var position = await LocationManager.GetPosition();
+
+                RootObject myweather = await OpenWeatherMapProxy.GetWeather(
+                    position.Coordinate.Latitude,
+                    position.Coordinate.Longitude);
+                txtDisplayLocation.Text = myweather.name;
+                txtDisplayTemp.Text = ((int)myweather.main.temp).ToString();
+                txtDisplayDescrp.Text = myweather.weather[0].description;
+                string icon = String.Format("ms-appx:///Assets/{0}.png", myweather.weather[0].icon);
+                ResultImage.Source = new BitmapImage(new Uri(icon, UriKind.Absolute));
+            }
+            catch
+            {
+                txtDisplayLocation.Text = "Unable to get weather!";
+            }
         }
     }
 }
