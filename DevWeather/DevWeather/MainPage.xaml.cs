@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DevWeather.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using static DevWeather.OpenWeatherMapProxy;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 // 0a08a218caa65034f65bba26714aec11
@@ -22,8 +24,10 @@ namespace DevWeather
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
+    
     public sealed partial class MainPage : Page
     {
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -34,10 +38,12 @@ namespace DevWeather
             try
             {
                 var position = await LocationManager.GetPosition();
-
+                var x = UnitsToggle.IsOn;
                 RootObject myweather = await OpenWeatherMapProxy.GetWeather(
-                    position.Coordinate.Latitude,
-                    position.Coordinate.Longitude);
+                   // position.Coordinate.Latitude,
+                   // position.Coordinate.Longitude,
+                   "Timisoara",
+                    UnitsToggle.IsOn);
                 txtDisplayLocation.Text = myweather.name;
                 txtDisplayTemp.Text = ((int)myweather.main.temp).ToString();
                 txtDisplayDescrp.Text = myweather.weather[0].description;
@@ -48,6 +54,13 @@ namespace DevWeather
             {
                 txtDisplayLocation.Text = "Unable to get weather!";
             }
+
+
+        }
+
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(AddNewLoc_Page));
         }
     }
 }

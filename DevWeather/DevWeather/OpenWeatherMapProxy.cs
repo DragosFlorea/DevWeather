@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DevWeather.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,14 +12,23 @@ using System.Threading.Tasks;
 namespace DevWeather
 {
 
+
     //https://channel9.msdn.com/Series/Windows-10-development-for-absolute-beginners/UWP-058-UWP-Weather-Setup-and-Working-with-the-Weather-API
     public class OpenWeatherMapProxy
     {
-        public async static Task<RootObject> GetWeather(double lat, double lon)
+        public const string metric = "metric";
+        public const string imperial = "imperial";
+        private static string token = "0a08a218caa65034f65bba26714aec11";
+        public async static Task<RootObject> GetWeather(/*double lat, double lon,*/ string city, bool unitssts)
         {
             var http = new HttpClient();
-            var url =String.Format("http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1},gb&appid=0a08a218caa65034f65bba26714aec11&units=metric", lat,lon);
-            var response = await http.GetAsync(url);
+            string units = getUnit(unitssts);
+            HttpResponseMessage response = null;
+            //var url =String.Format("http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1},gb&appid={2}&units={3}",lat,lon,token,units);
+            var url = String.Format("http://api.openweathermap.org/data/2.5/weather?q={0},gb&appid={1}&units={2}", city, token, units);
+            response = await http.GetAsync(url);
+
+           
             var result = await response.Content.ReadAsStringAsync();
             var serializer = new DataContractJsonSerializer(typeof(RootObject));
 
@@ -27,99 +37,31 @@ namespace DevWeather
 
             return data;
         }
+
+        private static string getUnit(bool status)
+        {
+            if (status) return imperial;
+            else return metric;
+        }
+        private string getUrl(System.Net.HttpStatusCode responseType, string city,string units)
+        {
+            string url="";
+            switch(responseType)
+            {
+                case System.Net.HttpStatusCode.Unauthorized: url = String.Format("http://api.openweathermap.org/data/2.5/weather?q={0},gb&appid={1}aec11&units={2}", city, token, units); break;
+            }
+            return url;
+        }
     }
+    
 
-    [DataContract]
-    public class Coord
-        {
-        [DataMember]
-        public double lon { get; set; }
-        [DataMember]
-        public double lat { get; set; }
-        }
-    [DataContract]
-    public class Weather
-        {
-        [DataMember]
-        public int id { get; set; }
-        [DataMember]
-        public string main { get; set; }
-        [DataMember]
-        public string description { get; set; }
-        [DataMember]
-        public string icon { get; set; }
-        }
+    
 
-    [DataContract]
-    public class Main
-        {
-        [DataMember]
-        public double temp { get; set; }
-        [DataMember]
-        public double pressure { get; set; }
-        [DataMember]
-        public int humidity { get; set; }
-        [DataMember]
-        public double temp_min { get; set; }
-        [DataMember]
-        public double temp_max { get; set; }
-        [DataMember]
-        public double sea_level { get; set; }
-        [DataMember]
-        public double grnd_level { get; set; }
-        }
-    [DataContract]
-    public class Wind
-        {
-        [DataMember]
-        public double speed { get; set; }
-        [DataMember]
-        public double deg { get; set; }
-        }
-    [DataContract]
-    public class Clouds
-        {
-        [DataMember]
-        public int all { get; set; }
-        }
-    [DataContract]
-    public class Sys
-        {
-        [DataMember]
-        public double message { get; set; }
-        [DataMember]
-        public string country { get; set; }
-        [DataMember]
-        public int sunrise { get; set; }
-        [DataMember]
-        public int sunset { get; set; }
-        }
-    [DataContract]
-    public class RootObject
-        {
-        [DataMember]
-        public Coord coord { get; set; }
-        [DataMember]
-        public List<Weather> weather { get; set; }
-        [DataMember]
-        public string @base { get; set; }
-        [DataMember]
-        public Main main { get; set; }
-        [DataMember]
-        public Wind wind { get; set; }
-        [DataMember]
-        public Clouds clouds { get; set; }
-        [DataMember]
-        public int dt { get; set; }
-        [DataMember]
-        public Sys sys { get; set; }
-        [DataMember]
-        public int id { get; set; }
-        [DataMember]
-        public string name { get; set; }
-        [DataMember]
-        public int cod { get; set; }
-        }
+   
+    
+
+   
+    
 
     
 }
