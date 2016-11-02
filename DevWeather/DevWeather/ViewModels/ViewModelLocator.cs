@@ -21,11 +21,16 @@ namespace DevWeather.ViewModels
             else { }
             SimpleIoc.Default.Register<INavigationService, NavigationService>();
             SimpleIoc.Default.Register<ListWeatherData_VM>();
+            SimpleIoc.Default.Register<MainListWeater_VM>();
         }
 
         public ListWeatherData_VM ListPageInstance
         {
             get { return ServiceLocator.Current.GetInstance<ListWeatherData_VM>(); }
+        }
+        public MainListWeater_VM MainListPageInstance
+        {
+            get { return ServiceLocator.Current.GetInstance<MainListWeater_VM>(); }
         }
         public static void Cleanup() { }
     }

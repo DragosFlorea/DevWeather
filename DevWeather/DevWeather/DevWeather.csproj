@@ -115,6 +115,7 @@
     <Compile Include="Models\Wind.cs" />
     <Compile Include="OpenWeatherMapProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\MainListWeater_VM.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="ViewModels\ListWeatherData_VM.cs" />
     <Compile Include="ViewModels\WeatherData_VM.cs" />

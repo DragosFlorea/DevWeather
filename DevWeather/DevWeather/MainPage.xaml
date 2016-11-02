@@ -5,7 +5,9 @@
     xmlns:local="using:DevWeather"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Loaded="Page_Loaded">
+    xmlns:vm="using:DevWeather.ViewModels"
+    mc:Ignorable="d" Loaded="Page_Loaded"
+     DataContext="{Binding MainListPageInstance, Source={StaticResource Locator}}">
     <Page.BottomAppBar>
         <CommandBar>
             <CommandBar.Content>
@@ -15,42 +17,44 @@
         </CommandBar>
     </Page.BottomAppBar>
 
-    <Pivot x:Name="rootPivot" Background="HotPink" >
-        
-            <PivotItem Header="Pivot Item 1">
-                <!--Pivot content goes here-->
-                <StackPanel  Grid.Row="1">
-                    <StackPanel  VerticalAlignment="Center">
-                        <TextBlock x:Name="txtDisplayTemp" 
-                   HorizontalAlignment="Center"
-                   Foreground="White"
-                   FontSize="52"/>
-                        <TextBlock x:Name="txtDisplayDescrp" 
-                   HorizontalAlignment="Center"
-                   Foreground="White"
-                   FontSize="35"/>
-                        <TextBlock x:Name="txtDisplayLocation" 
+    <Pivot x:Name="rootPivot" Background="HotPink" ItemsSource="{Binding MainListWeatherData}" SelectedIndex="{Binding ItemSelectedIndex}">
+        <Pivot.HeaderTemplate>
+            <DataTemplate x:DataType="vm:WeatherData_VM">
+                <TextBlock x:Name="txtDisplayLocation"
+                           Text="{x:Bind Reqlocation}"
                    HorizontalAlignment="Center"
                    Foreground="White"
                    FontSize="25"
                    TextWrapping="Wrap"/>
-                        <Image Name="ResultImage" 
+            </DataTemplate>
+        </Pivot.HeaderTemplate>
+        <Pivot.ItemTemplate>
+            <DataTemplate x:DataType="vm:WeatherData_VM">
+                <StackPanel  Grid.Row="1">
+                    <StackPanel  VerticalAlignment="Center">
+                        <TextBlock x:Name="txtDisplayTemp" 
+                   HorizontalAlignment="Center"
+                                   
+                                   Text="{x:Bind ReqWeather.main.temp}"
+                   Foreground="White"
+                   FontSize="52"/>
+                        <TextBlock x:Name="txtDisplayDescrp" 
+                                   Text="{x:Bind ReqWeather.main.pressure}"
+                   HorizontalAlignment="Center"
+                   Foreground="White"
+                   FontSize="35"/>
+
+                        <Image Name="ResultImage"
+                               Source="{x:Bind ReqIcon}"
                Width="200" 
                Height="200" 
                HorizontalAlignment="Center"/>
 
                     </StackPanel>
-                <ToggleSwitch x:Name="UnitsToggle" Header="C/F" OffContent="C" OnContent="F"/>
-            </StackPanel>
-            </PivotItem>
-            <PivotItem Header="Pivot Item 2">
-                <!--Pivot content goes here-->
-                <TextBlock Text="Content of pivot item 2."/>
-            </PivotItem>
-            <PivotItem Header="Pivot Item 3">
-                <!--Pivot content goes here-->
-                <TextBlock Text="Content of pivot item 3."/>
-            </PivotItem>
+                </StackPanel>
+            </DataTemplate>
+        </Pivot.ItemTemplate>
+       
         </Pivot>
 
 </Page>

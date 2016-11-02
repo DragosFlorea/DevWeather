@@ -14,10 +14,13 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="200"/>
         </Grid.RowDefinitions>
-        <ListBox Grid.Row="1" x:Name="MyListbox" ItemsSource="{Binding ListWeatherData}">
+        <ListBox Grid.Row="1" x:Name="MyListbox" 
+                 ItemsSource="{Binding ListWeatherData}" 
+                 SelectionChanged="MyListbox_SelectionChanged" 
+                 SelectedIndex="{Binding ItemSelectedIndex, Mode=TwoWay}">
             <ListBox.ItemTemplate >
-                <DataTemplate x:DataType="model:WeatherData_VM">
-                    <Grid Width="700" Background="HotPink">
+                <DataTemplate x:DataType="model:WeatherData_VM" >
+                    <Grid Width="1000" Background="HotPink">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
@@ -34,13 +37,18 @@
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-            <ListBoxItem>
-
-            </ListBoxItem>
         </ListBox>
         <StackPanel Grid.Row="3">
-        <ToggleSwitch x:Name="UnitsToggle" Header="C/F" OffContent="C" OnContent="F" Foreground="Aqua" HorizontalAlignment="Left" Toggled="UnitsToggle_Toggled"/>
-            <Button Width="50" Height="50" Background="AliceBlue" HorizontalAlignment="Right" VerticalAlignment="Top" Click="Button_Click"/>
+        <ToggleSwitch x:Name="UnitsToggle" Header="C/F"  OffContent="C" OnContent="F" Foreground="Aqua" HorizontalAlignment="Left" IsOn="{Binding Requnits ,Mode=TwoWay}" Toggled="UnitsToggle_Toggled"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="600"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" FontSize="30" Text="{Binding Location,Mode=TwoWay}"></TextBox>
+                <Button HorizontalAlignment="Left" Margin="50,0,0,0" Grid.Column="1" Width="50" Height="50" Background="AliceBlue"  VerticalAlignment="Top" Click="Button_Click" FontFamily="Segoe MDL2 Assets" Content="&#xE710;" FontSize="30"/>
+            </Grid>
+            
         </StackPanel>
     </Grid>
 </Page>

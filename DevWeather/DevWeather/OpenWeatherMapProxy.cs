@@ -19,13 +19,12 @@ namespace DevWeather
         public const string metric = "metric";
         public const string imperial = "imperial";
         private static string token = "0a08a218caa65034f65bba26714aec11";
-        public async static Task<RootObject> GetWeather(/*double lat, double lon,*/ string city, bool unitssts)
+        public async static Task<RootObject> GetWeather(/*double lat, double lon,*/ string city, bool units)
         {
             var http = new HttpClient();
-            string units = getUnit(unitssts);
             HttpResponseMessage response = null;
             //var url =String.Format("http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1},gb&appid={2}&units={3}",lat,lon,token,units);
-            var url = String.Format("http://api.openweathermap.org/data/2.5/weather?q={0},gb&appid={1}&units={2}", city, token, units);
+            var url = String.Format("http://api.openweathermap.org/data/2.5/weather?q={0},gb&appid={1}&units={2}", city, token, convertBoolToString(units));
             response = await http.GetAsync(url);
 
            
@@ -38,7 +37,7 @@ namespace DevWeather
             return data;
         }
 
-        private static string getUnit(bool status)
+        private static string convertBoolToString(bool status)
         {
             if (status) return imperial;
             else return metric;

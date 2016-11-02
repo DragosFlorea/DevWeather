@@ -34,13 +34,20 @@ namespace DevWeather
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             
-          await x.ListPageInstance.add("Madrid", "metric");
+          await x.ListPageInstance.add();
+            await x.ListPageInstance.SaveListofLocation();
         }
 
-        private void UnitsToggle_Toggled(object sender, RoutedEventArgs e)
+        private async  void UnitsToggle_Toggled(object sender, RoutedEventArgs e)
         {
             
-            x.ListPageInstance.getToggleStatus(UnitsToggle.IsOn);
+         await x.ListPageInstance.GetWeatherData_again();
+        }
+
+        private void MyListbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            x.MainListPageInstance.SetpivotIndex(x.ListPageInstance.ItemSelectedIndex);
+            this.Frame.Navigate(typeof(MainPage));
         }
     }
 }

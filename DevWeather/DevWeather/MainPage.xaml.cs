@@ -35,25 +35,25 @@ namespace DevWeather
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                var position = await LocationManager.GetPosition();
-                var x = UnitsToggle.IsOn;
-                RootObject myweather = await OpenWeatherMapProxy.GetWeather(
-                   // position.Coordinate.Latitude,
-                   // position.Coordinate.Longitude,
-                   "Timisoara",
-                    UnitsToggle.IsOn);
-                txtDisplayLocation.Text = myweather.name;
-                txtDisplayTemp.Text = ((int)myweather.main.temp).ToString();
-                txtDisplayDescrp.Text = myweather.weather[0].description;
-                string icon = String.Format("ms-appx:///Assets/{0}.png", myweather.weather[0].icon);
-                ResultImage.Source = new BitmapImage(new Uri(icon, UriKind.Absolute));
-            }
-            catch
-            {
-                txtDisplayLocation.Text = "Unable to get weather!";
-            }
+            //try
+            //{
+            //    var position = await LocationManager.GetPosition();
+            //    var x = UnitsToggle.IsOn;
+            //    RootObject myweather = await OpenWeatherMapProxy.GetWeather(
+            //       // position.Coordinate.Latitude,
+            //       // position.Coordinate.Longitude,
+            //       "Timisoara",
+            //        UnitsToggle.IsOn);
+            //    txtDisplayLocation.Text = myweather.name;
+            //    txtDisplayTemp.Text = ((int)myweather.main.temp).ToString();
+            //    txtDisplayDescrp.Text = myweather.weather[0].description;
+            //    string icon = String.Format("ms-appx:///Assets/{0}.png", myweather.weather[0].icon);
+            //    ResultImage.Source = new BitmapImage(new Uri(icon, UriKind.Absolute));
+            //}
+            //catch
+            //{
+            //    txtDisplayLocation.Text = "Unable to get weather!";
+            //}
 
 
         }
