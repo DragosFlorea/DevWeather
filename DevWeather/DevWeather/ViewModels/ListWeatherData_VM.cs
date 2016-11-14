@@ -1,13 +1,18 @@
 ﻿using DevWeather.Models;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Views;
+using Microsoft.Practices.ServiceLocation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Windows.Storage;
 using Windows.Storage.Streams;
 
@@ -16,13 +21,16 @@ namespace DevWeather.ViewModels
    
     public class ListWeatherData_VM:ViewModelBase
     {
-        public ViewModelBase A { get; set; }
+        
 
         private ObservableCollection<WeatherData_VM> listWeatherData= new ObservableCollection<WeatherData_VM>();
-        private bool toggleStatus;
-        private string location;
-        private int itemSelectedIndex;
+       // private LocationsToStorage locToStorage = new LocationsToStorage();
+        private MainListWeater_VM MainPageInstance;
+        private readonly INavigationService _navigationService;
+
         
+
+
         /// <summary>
         /// List which is used for binding the listbox
         /// </summary>
@@ -33,21 +41,28 @@ namespace DevWeather.ViewModels
             {
                 listWeatherData = value;
                 RaisePropertyChanged("ListWeatherData");
+                
             }
         }
-        
+
         /// <summary>
         /// Binding property for selected index which is passed to MainPage
         /// </summary>
+        private int itemSelectedIndex;
         public int ItemSelectedIndex
         {
             get { return itemSelectedIndex; }
             set
             {
-                itemSelectedIndex = value;
-                RaisePropertyChanged("ItemSelectedIndex");
+                    itemSelectedIndex = value;
+                    RaisePropertyChanged("ItemSelectedIndex");
+                //this.MainPageInstance = ServiceLocator.Current.GetInstance<MainListWeater_VM>();
+                MainPageInstance.SetpivotIndex(ItemSelectedIndex);
+                    itemSelectedIndex = -1;
+                    _navigationService.NavigateTo("FirstPage");
             }
         }
+        private string location;
         public string Location
         {
             get { return location; }
@@ -61,49 +76,59 @@ namespace DevWeather.ViewModels
         /// <summary>
         /// Binding property to the toggle switch
         /// </summary>
+        private bool toggleStatus;
         public bool Requnits
         {
             get { return toggleStatus; }
             set
             {
                 toggleStatus = value;
+                MainPageInstance.setUnits( value);
                 RaisePropertyChanged("Requnits");
             }
-        }     
+        }
+        
         /// <summary>
         /// Refresh function which shall be called on unit change
         /// </summary>
         /// <returns></returns>
         public async Task GetWeatherData_again()
         {
-            foreach (var item in ListWeatherData)
+
+            listWeatherData.Clear();
+            foreach (var item in MainPageInstance.LocToStorage.LocationList)
             {
-                item.ReqWeather = await requestWeather(item, Requnits);
-                RaisePropertyChanged("ListWeatherData");
+                var newItem = new WeatherData_VM(new WeatherData(item));
+                
+                newItem.ReqWeather = await requestWeather(newItem, Requnits);
+                listWeatherData.Add(newItem);
+
             }
         }
-
         /// <summary>
         /// Populate ListWeatherData list
         /// </summary>
-        public async void init()
+        public async Task init()
         {
-
- //           listWeatherData = await readListofLocation();
-            //var newItem = new WeatherData_VM(new WeatherData("Londra"));
-            //newItem.ReqWeather = await requestWeather(newItem, Requnits);
-            //listWeatherData.Add(newItem);
-            //newItem=new WeatherData_VM(new WeatherData("Paris"));
-            //newItem.ReqWeather = await requestWeather(newItem, Requnits);
-            //listWeatherData.Add(newItem);
+            this.MainPageInstance = ServiceLocator.Current.GetInstance<MainListWeater_VM>();
+            listWeatherData.Clear();
+                if (MainPageInstance.LocToStorage.LocationList.Count != 0)
+                    foreach (var item in MainPageInstance.LocToStorage.LocationList)
+                    {
+                        var newItem = new WeatherData_VM(new WeatherData(item));
+                        newItem.ReqWeather = await requestWeather(newItem, Requnits);
+                        listWeatherData.Add(newItem);
+                    }
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public ListWeatherData_VM()
-        {
-             init();
+        public ListWeatherData_VM(INavigationService navigationService)
+        {          
+            _navigationService = navigationService;            
+            this.AddCommand = new RelayCommand(async () => await add(), CanAdd);
+            
         }
         /// <summary>
         /// get weather from api
@@ -127,7 +152,26 @@ namespace DevWeather.ViewModels
             item.ReqWeather =  await OpenWeatherMapProxy.GetWeather(item.Reqlocation, units);
             return item.ReqWeather;
         }
-
+        private bool _buttCancel;
+        public bool ButtCancel
+        {
+            get { return _buttCancel; }
+            set
+            {
+                _buttCancel = value;
+                RaisePropertyChanged("ButtCancel");
+            }
+        }
+        private bool _isVisible;
+        public bool IsVisible
+        {
+            get { return _isVisible; }
+            set
+            {
+                _isVisible = value;
+                RaisePropertyChanged(nameof(IsVisible));
+            }
+        }
         /// <summary>
         /// Add new location
         /// </summary>
@@ -136,36 +180,19 @@ namespace DevWeather.ViewModels
         /// <returns></returns>
         public async Task add()
         {
-            var newItem = new WeatherData_VM(new WeatherData(location));
+            WeatherData_VM newItem = new WeatherData_VM(new WeatherData(location));
             newItem.ReqWeather = new RootObject();
             newItem.ReqWeather = await requestWeather(newItem, Requnits);
             listWeatherData.Add(newItem);
-            
+            MainPageInstance.LocToStorage.LocationList.Add(location);
+           await MainPageInstance.LocToStorage.SaveListofLocation(); 
+        }
+        
+        public  ICommand AddCommand { get; }        
+        private bool CanAdd()
+        {
+            return true;
         }
 
-
-        public async Task SaveListofLocation()
-        {
-            StorageFile userListofLocations = await ApplicationData.Current.LocalFolder.CreateFileAsync("userListofLocation", CreationCollisionOption.ReplaceExisting);
-            IRandomAccessStream raStream = await userListofLocations.OpenAsync(FileAccessMode.ReadWrite);
-            using (IOutputStream outStream = raStream.GetOutputStreamAt(0))
-            {
-                DataContractSerializer serializer = new DataContractSerializer(typeof(ObservableCollection<WeatherData_VM>));
-                serializer.WriteObject(outStream.AsStreamForWrite(), listWeatherData);
-                await outStream.FlushAsync();
-                outStream.Dispose();   
-                raStream.Dispose();
-            }
-        }
-        private async Task<ObservableCollection<WeatherData_VM>> readListofLocation()
-        {
-            var Serializer = new DataContractSerializer(typeof(ObservableCollection<WeatherData_VM>));
-            using (var stream = await ApplicationData.Current.LocalFolder.OpenStreamForReadAsync("userListofLocation"))
-            {
-                var list = (ObservableCollection<WeatherData_VM>)Serializer.ReadObject(stream);
-                return list;
-            }
-            
-        }
     }
 }

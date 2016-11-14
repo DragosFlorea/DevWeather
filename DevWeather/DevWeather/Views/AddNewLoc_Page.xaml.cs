@@ -1,4 +1,5 @@
 ﻿using DevWeather.ViewModels;
+using Microsoft.Practices.ServiceLocation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,36 +19,26 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 //https://mallibone.com/post/hello-universal-windows-platform-uwpwindows-10
-namespace DevWeather
+namespace DevWeather.Views
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class AddNewLoc_Page : Page
     {
-        ViewModelLocator x = new ViewModelLocator();
+        private ListWeatherData_VM ListPageInstance;
         public AddNewLoc_Page()
         {
             this.InitializeComponent(); 
-
         }
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            
-          await x.ListPageInstance.add();
-            await x.ListPageInstance.SaveListofLocation();
+            this.ListPageInstance = ServiceLocator.Current.GetInstance<ListWeatherData_VM>();
+            await ListPageInstance.init();
         }
-
         private async  void UnitsToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-            
-         await x.ListPageInstance.GetWeatherData_again();
-        }
-
-        private void MyListbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            x.MainListPageInstance.SetpivotIndex(x.ListPageInstance.ItemSelectedIndex);
-            this.Frame.Navigate(typeof(MainPage));
+        {            
+         await ListPageInstance.GetWeatherData_again();
         }
     }
 }

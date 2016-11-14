@@ -1,0 +1,51 @@
+﻿<Page
+    x:Class="DevWeather.Views.AddNewLoc_Page"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DevWeather.Views"
+    xmlns:converters ="using:DevWeather.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:model="using:DevWeather.ViewModels"
+    DataContext="{Binding ListPageInstance, Source={StaticResource Locator}}">
+
+    <Page.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <DataTemplate x:Key="ImageTextListTemplate"  x:DataType="model:WeatherData_VM">
+            <StackPanel Orientation="Horizontal" Width="600" Height="130" Background="HotPink">
+                <Image Height="110" Width="110" Margin="0,8,0,8" Source="{x:Bind ReqIcon}" Stretch="UniformToFill"/>
+                <StackPanel VerticalAlignment="Center" Width="380" Margin="8,8,0,0">
+                    <TextBlock Text="{x:Bind ReqWeather.main.temp}" Style="{StaticResource BaseTextBlockStyle}" />
+                    <TextBlock Text="{x:Bind ReqWeather.main.pressure}" TextWrapping="WrapWholeWords" Style="{StaticResource CaptionTextBlockStyle}" />
+                    <TextBlock Text="{x:Bind Reqlocation}" TextWrapping="WrapWholeWords" Margin="0,8,0,0" Style="{StaticResource BodyTextBlockStyle}"/>
+                </StackPanel>
+                <RadioButton Visibility="{Binding ButtCancel ,Mode=TwoWay, Converter={StaticResource BoolToVis}}"/>
+            </StackPanel>
+        </DataTemplate>
+    </Page.Resources>
+    <Page.BottomAppBar>
+        <CommandBar x:Name="MyCommandBar">
+            <CommandBar.Content>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <ToggleSwitch x:Name="UnitsToggle" FontSize="25"  OffContent="C" OnContent="F"  IsOn="{Binding Requnits ,Mode=TwoWay}" Toggled="UnitsToggle_Toggled" />
+                    <TextBox PlaceholderText="New City" MinWidth="400" Height="48" Margin="12,0" VerticalAlignment="Top" FontSize="25" Text="{Binding Location,Mode=TwoWay}"/>
+                    <AppBarButton x:Name="appbarbutton" Icon="Add" Label="New City" IsCompact="True" Command="{Binding AddCommand}"/>
+                </StackPanel>
+            </CommandBar.Content>
+            <AppBarToggleButton x:Name="edit" Icon="Edit" Label="New City" IsCompact="True" IsChecked="{Binding ButtCancel,Mode=TwoWay}" />
+        </CommandBar>
+    </Page.BottomAppBar>
+    <Grid Background="{ThemeResource ApplicationPointerOverForegroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="200"/>
+        </Grid.RowDefinitions>
+        <ListBox Grid.Row="1" x:Name="MyListbox" 
+                 ItemsSource="{Binding ListWeatherData,Mode=TwoWay}"
+                 SelectedIndex="{Binding ItemSelectedIndex, Mode=TwoWay}"
+                 ItemTemplate="{StaticResource ImageTextListTemplate}">
+        </ListBox>
+    </Grid>
+</Page>

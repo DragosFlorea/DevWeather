@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DevWeather.Models;
+using DevWeather.Views;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,6 +24,8 @@ namespace DevWeather
     /// </summary>
     sealed partial class App : Application
     {
+
+        
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -75,6 +79,7 @@ namespace DevWeather
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation
                     // parameter
+                   
                     rootFrame.Navigate(typeof(MainPage), e.Arguments);
                 }
                 // Ensure the current window is active

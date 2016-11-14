@@ -1,9 +1,12 @@
 ﻿using DevWeather.Models;
+using DevWeather.ViewModels;
+using Microsoft.Practices.ServiceLocation;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -19,7 +22,7 @@ using static DevWeather.OpenWeatherMapProxy;
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 // 0a08a218caa65034f65bba26714aec11
 //https://msdn.microsoft.com/en-us/windows/uwp/maps-and-location/get-location
-namespace DevWeather
+namespace DevWeather.Views
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -27,35 +30,15 @@ namespace DevWeather
     
     public sealed partial class MainPage : Page
     {
-
+        private MainListWeater_VM MainPageInstance;
         public MainPage()
         {
             this.InitializeComponent();
-        }
-
-        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        }                                                                                                                                     
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            //try
-            //{
-            //    var position = await LocationManager.GetPosition();
-            //    var x = UnitsToggle.IsOn;
-            //    RootObject myweather = await OpenWeatherMapProxy.GetWeather(
-            //       // position.Coordinate.Latitude,
-            //       // position.Coordinate.Longitude,
-            //       "Timisoara",
-            //        UnitsToggle.IsOn);
-            //    txtDisplayLocation.Text = myweather.name;
-            //    txtDisplayTemp.Text = ((int)myweather.main.temp).ToString();
-            //    txtDisplayDescrp.Text = myweather.weather[0].description;
-            //    string icon = String.Format("ms-appx:///Assets/{0}.png", myweather.weather[0].icon);
-            //    ResultImage.Source = new BitmapImage(new Uri(icon, UriKind.Absolute));
-            //}
-            //catch
-            //{
-            //    txtDisplayLocation.Text = "Unable to get weather!";
-            //}
-
-
+            this.MainPageInstance = ServiceLocator.Current.GetInstance<MainListWeater_VM>();
+            await   MainPageInstance.init();
         }
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)

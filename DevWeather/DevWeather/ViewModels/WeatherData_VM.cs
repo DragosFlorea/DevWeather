@@ -10,25 +10,23 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace DevWeather.ViewModels
 {
-    [DataContract, KnownType(typeof(ViewModelBase))]
-    
-    public class WeatherData_VM
+    public class WeatherData_VM : ViewModelBase
     {
-        public ViewModelBase A { get; set; }
-        private WeatherData weatherData;   
+
+        private WeatherData weatherData;
+
         public WeatherData_VM(WeatherData _weather)
         {
             this.weatherData = _weather;
         }
-        [DataMember]
+
         public string Reqlocation
         {
             get { return this.weatherData.reqLocation; }
             set { weatherData.reqLocation = value;
-                A.RaisePropertyChanged("Reqlocation");
+                RaisePropertyChanged("Reqlocation");
             }
         }
-        [DataMember]
         public BitmapImage ReqIcon
         {
             get { if (weatherData.reqweather != null)
@@ -45,21 +43,30 @@ namespace DevWeather.ViewModels
             {
                 string icon = String.Format("ms-appx:///Assets/{0}.png", value);
                 new BitmapImage(new Uri(icon, UriKind.Absolute));
-                A.RaisePropertyChanged("ReqIcon");
+               RaisePropertyChanged("ReqIcon");
             }
         }
-        [DataMember]
         public RootObject ReqWeather
         {
             get { return this.weatherData.reqweather; }
             set
             {
                 weatherData.reqweather = value;
-                A.RaisePropertyChanged("ReqWeather");
+                RaisePropertyChanged("ReqWeather");
+            }
+        }
+        private bool unit;
+        public bool Units_1
+        {
+            get { return unit; }
+            set
+            {
+                unit = value;
+                RaisePropertyChanged("Units_1");
             }
         }
 
-        
-        
+
+
     }
 }
