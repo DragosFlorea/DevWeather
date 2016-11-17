@@ -36,6 +36,24 @@ namespace DevWeather
 
             return data;
         }
+        public async static Task<RootObject> GetWeather_byCoord(double lat, double lon, bool units)
+        {
+            var http = new HttpClient();
+            HttpResponseMessage response = null;
+            var url =String.Format("http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1},gb&appid={2}&units={3}",lat,lon,token,units);
+           // var url = String.Format("http://api.openweathermap.org/data/2.5/weather?q={0},gb&appid={1}&units={2}", city, token, convertBoolToString(units));
+            response = await http.GetAsync(url);
+
+
+            var result = await response.Content.ReadAsStringAsync();
+            var serializer = new DataContractJsonSerializer(typeof(RootObject));
+
+            var ms = new MemoryStream(Encoding.UTF8.GetBytes(result));
+            var data = (RootObject)serializer.ReadObject(ms);
+
+            return data;
+        }
+
 
         private static string convertBoolToString(bool status)
         {

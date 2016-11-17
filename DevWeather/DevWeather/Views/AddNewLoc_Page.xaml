@@ -12,20 +12,39 @@
 
     <Page.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BoolToVis"/>
-        <DataTemplate x:Key="ImageTextListTemplate"  x:DataType="model:WeatherData_VM">
-            <StackPanel Orientation="Horizontal" Width="600" Height="130" Background="HotPink">
-                <Image Height="110" Width="110" Margin="0,8,0,8" Source="{x:Bind ReqIcon}" Stretch="UniformToFill"/>
-                <StackPanel VerticalAlignment="Center" Width="380" Margin="8,8,0,0">
-                    <TextBlock Text="{x:Bind ReqWeather.main.temp}" Style="{StaticResource BaseTextBlockStyle}" />
-                    <TextBlock Text="{x:Bind ReqWeather.main.pressure}" TextWrapping="WrapWholeWords" Style="{StaticResource CaptionTextBlockStyle}" />
-                    <TextBlock Text="{x:Bind Reqlocation}" TextWrapping="WrapWholeWords" Margin="0,8,0,0" Style="{StaticResource BodyTextBlockStyle}"/>
-                </StackPanel>
-                <RadioButton Visibility="{Binding ButtCancel ,Mode=TwoWay, Converter={StaticResource BoolToVis}}"/>
+        <DataTemplate x:Key="ImageTextListTemplate"  x:DataType="model:WeatherData_ListVM">
+            <StackPanel Orientation="Horizontal" Width="1500" Height="150" >
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="380"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0"   Height="120" Width="120" Margin="0,8,0,8" Source="{x:Bind ReqIcon}" Stretch="UniformToFill"/>
+                    <StackPanel Grid.Column="1"  VerticalAlignment="Center" Width="380" Margin="8,8,0,0">
+                        <TextBlock Text="{x:Bind ReqWeather.main.temp}" FontSize="26" Style="{StaticResource BodyTextBlockStyle}" />
+                        <TextBlock Text="{x:Bind ReqWeather.weather[0].main}" TextWrapping="WrapWholeWords" Style="{StaticResource BodyTextBlockStyle}" />
+                        <TextBlock Text="{x:Bind Reqlocation}" TextWrapping="WrapWholeWords" FontSize="26" Margin="0,8,0,0" Style="{StaticResource BodyTextBlockStyle}"/>
+                    </StackPanel>
+                    <StackPanel  Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="Temp Min" Style="{StaticResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="Temp Max" Style="{StaticResource BodyTextBlockStyle}" />
+                    </StackPanel>
+                    <StackPanel  Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="{x:Bind ReqWeather.main.temp_min}" Style="{StaticResource BodyTextBlockStyle}" />
+                        <TextBlock Text="{x:Bind ReqWeather.main.temp_max}"  Style="{StaticResource BodyTextBlockStyle}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="4"  VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <RadioButton  Visibility="{Binding IsVisible ,Mode=TwoWay, Converter={StaticResource BoolToVis}}"/>
+                    </StackPanel>
+                </Grid>
             </StackPanel>
         </DataTemplate>
     </Page.Resources>
     <Page.BottomAppBar>
-        <CommandBar x:Name="MyCommandBar">
+        <CommandBar x:Name="MyCommandBar" >
             <CommandBar.Content>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                     <ToggleSwitch x:Name="UnitsToggle" FontSize="25"  OffContent="C" OnContent="F"  IsOn="{Binding Requnits ,Mode=TwoWay}" Toggled="UnitsToggle_Toggled" />
@@ -33,7 +52,7 @@
                     <AppBarButton x:Name="appbarbutton" Icon="Add" Label="New City" IsCompact="True" Command="{Binding AddCommand}"/>
                 </StackPanel>
             </CommandBar.Content>
-            <AppBarToggleButton x:Name="edit" Icon="Edit" Label="New City" IsCompact="True" IsChecked="{Binding ButtCancel,Mode=TwoWay}" />
+            <AppBarToggleButton  x:Name="edit" Icon="Edit" Label="New City" IsCompact="True" IsChecked="{Binding IsVisible ,Mode=TwoWay}" />
         </CommandBar>
     </Page.BottomAppBar>
     <Grid Background="{ThemeResource ApplicationPointerOverForegroundThemeBrush}">
@@ -42,7 +61,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="200"/>
         </Grid.RowDefinitions>
-        <ListBox Grid.Row="1" x:Name="MyListbox" 
+        <ListBox Grid.Row="1" x:Name="MyListbox" Background="HotPink" 
                  ItemsSource="{Binding ListWeatherData,Mode=TwoWay}"
                  SelectedIndex="{Binding ItemSelectedIndex, Mode=TwoWay}"
                  ItemTemplate="{StaticResource ImageTextListTemplate}">

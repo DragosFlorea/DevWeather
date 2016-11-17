@@ -15,10 +15,10 @@ namespace DevWeather.ViewModels
 {
     public class MainListWeater_VM: ViewModelBase
     {
-        private ObservableCollection<WeatherData_VM> mainlistWeatherData = new ObservableCollection<WeatherData_VM>();
+        private ObservableCollection<WeatherData_MainVM> mainlistWeatherData = new ObservableCollection<WeatherData_MainVM>();
         private ListWeatherData_VM ListPageInstance = ServiceLocator.Current.GetInstance<ListWeatherData_VM>();
         private INavigationService _navigationService;
-        public ObservableCollection<WeatherData_VM> MainListWeatherData
+        public ObservableCollection<WeatherData_MainVM> MainListWeatherData
         {
             get { return mainlistWeatherData; }
             set
@@ -75,6 +75,9 @@ namespace DevWeather.ViewModels
 
         public async Task init()
         {
+            LocationManager x = new LocationManager();
+            var location = await x.GetPosition();
+
             if (readFromFile == false)
             {
                 await locToStorage.getDataFromFile();
@@ -83,7 +86,7 @@ namespace DevWeather.ViewModels
             mainlistWeatherData.Clear();
                 foreach (var item in locToStorage.LocationList)
                 {
-                    var newItem = new WeatherData_VM(new WeatherData(item));
+                    var newItem = new WeatherData_MainVM(new WeatherData(item));
                     newItem.ReqWeather = await requestWeather(newItem, newItem.Units_1);
                     mainlistWeatherData.Add(newItem);
                 }
@@ -92,14 +95,17 @@ namespace DevWeather.ViewModels
         public MainListWeater_VM( INavigationService navigationService)
         {
             _navigationService = navigationService;
-
             this.NavToLocationsCommand = new RelayCommand(Navigate, CanNavigateToLocations);
-          //  ListPageInstance.init();
         }
 
-        public async Task<RootObject> requestWeather(WeatherData_VM item, bool units)
+        public async Task<RootObject> requestWeather(WeatherData_MainVM item, bool units)
         {
             item.ReqWeather = await OpenWeatherMapProxy.GetWeather(item.Reqlocation, units);
+            return item.ReqWeather;
+        }
+        public async Task<RootObject> requestWeather_byCoord(WeatherData_MainVM item, bool units)
+        {
+            item.ReqWeather = await OpenWeatherMapProxy.GetWeather_byCoord(15,4323, units);
             return item.ReqWeather;
         }
 

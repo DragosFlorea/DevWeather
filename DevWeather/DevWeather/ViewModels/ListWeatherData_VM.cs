@@ -23,7 +23,7 @@ namespace DevWeather.ViewModels
     {
         
 
-        private ObservableCollection<WeatherData_VM> listWeatherData= new ObservableCollection<WeatherData_VM>();
+        private ObservableCollection<WeatherData_ListVM> listWeatherData= new ObservableCollection<WeatherData_ListVM>();
        // private LocationsToStorage locToStorage = new LocationsToStorage();
         private MainListWeater_VM MainPageInstance;
         private readonly INavigationService _navigationService;
@@ -34,7 +34,7 @@ namespace DevWeather.ViewModels
         /// <summary>
         /// List which is used for binding the listbox
         /// </summary>
-        public ObservableCollection<WeatherData_VM> ListWeatherData
+        public ObservableCollection<WeatherData_ListVM> ListWeatherData
         {
             get { return listWeatherData; }
             set
@@ -84,10 +84,33 @@ namespace DevWeather.ViewModels
             {
                 toggleStatus = value;
                 MainPageInstance.setUnits( value);
+
                 RaisePropertyChanged("Requnits");
             }
         }
-        
+
+        private bool _isVisible;
+        public bool IsVisible
+        {
+            get { return _isVisible; }
+            set
+            {
+                _isVisible = value;
+                setVisibility(value);
+                RaisePropertyChanged(nameof(IsVisible));
+            }
+        }
+
+        public void setVisibility(bool Visibility)
+        {
+            if (ListWeatherData != null && ListWeatherData.Count != 0)
+            {
+                foreach (var vm in ListWeatherData)
+                {
+                    vm.IsVisible = IsVisible;
+                }
+            }
+        }
         /// <summary>
         /// Refresh function which shall be called on unit change
         /// </summary>
@@ -98,7 +121,7 @@ namespace DevWeather.ViewModels
             listWeatherData.Clear();
             foreach (var item in MainPageInstance.LocToStorage.LocationList)
             {
-                var newItem = new WeatherData_VM(new WeatherData(item));
+                var newItem = new WeatherData_ListVM(new WeatherData(item));
                 
                 newItem.ReqWeather = await requestWeather(newItem, Requnits);
                 listWeatherData.Add(newItem);
@@ -115,7 +138,7 @@ namespace DevWeather.ViewModels
                 if (MainPageInstance.LocToStorage.LocationList.Count != 0)
                     foreach (var item in MainPageInstance.LocToStorage.LocationList)
                     {
-                        var newItem = new WeatherData_VM(new WeatherData(item));
+                        var newItem = new WeatherData_ListVM(new WeatherData(item));
                         newItem.ReqWeather = await requestWeather(newItem, Requnits);
                         listWeatherData.Add(newItem);
                     }
@@ -136,7 +159,7 @@ namespace DevWeather.ViewModels
         /// <param name="item"></param>
         /// <param name="units"></param>
         /// <returns></returns>
-        public async Task requestWeather_item(WeatherData_VM item, bool units)
+        public async Task requestWeather_item(WeatherData_ListVM item, bool units)
         {
             item.ReqWeather = await OpenWeatherMapProxy.GetWeather(item.Reqlocation, units);
             
@@ -147,31 +170,12 @@ namespace DevWeather.ViewModels
         /// <param name="item"></param>
         /// <param name="units"></param>
         /// <returns >RootObject</returns>
-        public async Task<RootObject> requestWeather(WeatherData_VM item, bool units)
+        public async Task<RootObject> requestWeather(WeatherData_ListVM item, bool units)
         {      
             item.ReqWeather =  await OpenWeatherMapProxy.GetWeather(item.Reqlocation, units);
             return item.ReqWeather;
         }
-        private bool _buttCancel;
-        public bool ButtCancel
-        {
-            get { return _buttCancel; }
-            set
-            {
-                _buttCancel = value;
-                RaisePropertyChanged("ButtCancel");
-            }
-        }
-        private bool _isVisible;
-        public bool IsVisible
-        {
-            get { return _isVisible; }
-            set
-            {
-                _isVisible = value;
-                RaisePropertyChanged(nameof(IsVisible));
-            }
-        }
+ 
         /// <summary>
         /// Add new location
         /// </summary>
@@ -180,7 +184,7 @@ namespace DevWeather.ViewModels
         /// <returns></returns>
         public async Task add()
         {
-            WeatherData_VM newItem = new WeatherData_VM(new WeatherData(location));
+            WeatherData_ListVM newItem = new WeatherData_ListVM(new WeatherData(location));
             newItem.ReqWeather = new RootObject();
             newItem.ReqWeather = await requestWeather(newItem, Requnits);
             listWeatherData.Add(newItem);

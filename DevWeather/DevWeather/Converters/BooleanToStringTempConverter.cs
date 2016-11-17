@@ -11,7 +11,7 @@ namespace DevWeather.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            return (value is bool && (bool)value) ? "C" : "F";
+            return (value is bool && (bool)value) ? "°F" : "°C";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

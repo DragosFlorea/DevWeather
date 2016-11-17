@@ -98,7 +98,10 @@
     <Compile Include="Converters\BooleanToStringTempConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\InvertedBoolToVisibilityConverter.cs" />
+    <Compile Include="Models\GeoName\Geoname.cs" />
+    <Compile Include="Models\GeoName\Root_Geoname.cs" />
     <Compile Include="Models\LocationsToStorage.cs" />
+    <Compile Include="ViewModels\WeatherData_MainVM.cs" />
     <Compile Include="Views\AddNewLoc_Page.xaml.cs">
       <DependentUpon>AddNewLoc_Page.xaml</DependentUpon>
     </Compile>
@@ -122,7 +125,7 @@
     <Compile Include="ViewModels\MainListWeater_VM.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="ViewModels\ListWeatherData_VM.cs" />
-    <Compile Include="ViewModels\WeatherData_VM.cs" />
+    <Compile Include="ViewModels\WeatherData_ListVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

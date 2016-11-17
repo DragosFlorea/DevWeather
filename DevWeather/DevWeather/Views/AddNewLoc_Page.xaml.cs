@@ -39,6 +39,7 @@ namespace DevWeather.Views
         private async  void UnitsToggle_Toggled(object sender, RoutedEventArgs e)
         {            
          await ListPageInstance.GetWeatherData_again();
+            ListPageInstance.IsVisible = false;
         }
     }
 }

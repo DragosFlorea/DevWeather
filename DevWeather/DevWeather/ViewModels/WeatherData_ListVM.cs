@@ -10,12 +10,12 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace DevWeather.ViewModels
 {
-    public class WeatherData_VM : ViewModelBase
+    public class WeatherData_ListVM : ViewModelBase
     {
 
         private WeatherData weatherData;
 
-        public WeatherData_VM(WeatherData _weather)
+        public WeatherData_ListVM(WeatherData _weather)
         {
             this.weatherData = _weather;
         }
@@ -55,18 +55,15 @@ namespace DevWeather.ViewModels
                 RaisePropertyChanged("ReqWeather");
             }
         }
-        private bool unit;
-        public bool Units_1
+        private bool _isVisible;
+        public bool IsVisible
         {
-            get { return unit; }
+            get { return _isVisible; }
             set
             {
-                unit = value;
-                RaisePropertyChanged("Units_1");
+                _isVisible = value;
+                RaisePropertyChanged(nameof(IsVisible));
             }
         }
-
-
-
     }
 }
