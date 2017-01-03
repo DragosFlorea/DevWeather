@@ -1,4 +1,6 @@
 ﻿using DevWeather.Models;
+using DevWeather.Models.Forecast;
+using DevWeather.Models.GeoName;
 using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
@@ -56,6 +58,37 @@ namespace DevWeather.ViewModels
             {
                 weatherData.reqweather = value;
                 RaisePropertyChanged("ReqWeather");
+            }
+        }
+        private Forecast_Root forecastData;
+        public Forecast_Root ReqForecast
+        {
+            get { return this.forecastData; }
+            set
+            {
+                forecastData = value;
+                RaisePropertyChanged("ReqForecast");
+            }
+        }
+        private Geoname geonameData;
+        private Root_Geoname geonameRootData;
+        public Geoname GeonameData
+        {
+            get { return geonameData; }
+            set
+            {
+                geonameData = value;
+                RaisePropertyChanged("GeonameData");
+            }
+        }
+        public Root_Geoname GeonameRootData
+        {
+            get { return geonameRootData; }
+            set
+            {
+                geonameRootData = value;
+                //  GeonameList = GeonameRootData.geonames;
+                RaisePropertyChanged("GeonameRootData");
             }
         }
         private bool unit;

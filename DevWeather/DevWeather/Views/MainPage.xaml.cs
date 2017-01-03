@@ -38,7 +38,7 @@ namespace DevWeather.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             this.MainPageInstance = ServiceLocator.Current.GetInstance<MainListWeater_VM>();
-            await   MainPageInstance.init();
+            await   MainPageInstance.FirstInit();
         }
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)

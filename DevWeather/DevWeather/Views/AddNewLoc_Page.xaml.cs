@@ -1,4 +1,5 @@
-﻿using DevWeather.ViewModels;
+﻿using DevWeather.Models.GeoName;
+using DevWeather.ViewModels;
 using Microsoft.Practices.ServiceLocation;
 using System;
 using System.Collections.Generic;
@@ -35,11 +36,6 @@ namespace DevWeather.Views
         {
             this.ListPageInstance = ServiceLocator.Current.GetInstance<ListWeatherData_VM>();
             await ListPageInstance.init();
-        }
-        private async  void UnitsToggle_Toggled(object sender, RoutedEventArgs e)
-        {            
-         await ListPageInstance.GetWeatherData_again();
-            ListPageInstance.IsVisible = false;
         }
     }
 }

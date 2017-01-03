@@ -7,11 +7,14 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    xmlns:interact="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:model="using:DevWeather.ViewModels"
     DataContext="{Binding ListPageInstance, Source={StaticResource Locator}}">
 
     <Page.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <converters:AutoSuggestQueryParameterConverter x:Key="ArgsConverter" />
         <DataTemplate x:Key="ImageTextListTemplate"  x:DataType="model:WeatherData_ListVM">
             <StackPanel Orientation="Horizontal" Width="1500" Height="150" >
                 <Grid>
@@ -36,9 +39,16 @@
                         <TextBlock Text="{x:Bind ReqWeather.main.temp_min}" Style="{StaticResource BodyTextBlockStyle}" />
                         <TextBlock Text="{x:Bind ReqWeather.main.temp_max}"  Style="{StaticResource BodyTextBlockStyle}"/>
                     </StackPanel>
-                    <StackPanel Grid.Column="4"  VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <RadioButton  Visibility="{Binding IsVisible ,Mode=TwoWay, Converter={StaticResource BoolToVis}}"/>
-                    </StackPanel>
+                   
+                    <ToggleButton  Grid.Column="4" Visibility="{Binding IsVisible ,Mode=TwoWay, Converter={StaticResource BoolToVis}}" Height="40" Width="119"  >
+                            <interact:Interaction.Behaviors>
+                                <core:EventTriggerBehavior  EventName="Click">
+                                    <core:InvokeCommandAction Command="{x:Bind RemoveCommand}" CommandParameter="{x:Bind Reqlocation}"/>
+                                    <!--InputConverter="{StaticResource ArgsConverter}"-->
+                                </core:EventTriggerBehavior>
+                            </interact:Interaction.Behaviors>
+                        </ToggleButton>
+                    
                 </Grid>
             </StackPanel>
         </DataTemplate>
@@ -47,8 +57,14 @@
         <CommandBar x:Name="MyCommandBar" >
             <CommandBar.Content>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                    <ToggleSwitch x:Name="UnitsToggle" FontSize="25"  OffContent="C" OnContent="F"  IsOn="{Binding Requnits ,Mode=TwoWay}" Toggled="UnitsToggle_Toggled" />
-                    <TextBox PlaceholderText="New City" MinWidth="400" Height="48" Margin="12,0" VerticalAlignment="Top" FontSize="25" Text="{Binding Location,Mode=TwoWay}"/>
+                    <ToggleSwitch x:Name="UnitsToggle" FontSize="25"  OffContent="C" OnContent="F"  IsOn="{Binding Requnits ,Mode=TwoWay}">
+                        <interact:Interaction.Behaviors>
+                            <core:EventTriggerBehavior EventName="Toggled">
+                                <core:InvokeCommandAction Command="{Binding ToggleSwitchCommand}"/>
+                            </core:EventTriggerBehavior>
+                        </interact:Interaction.Behaviors>
+                    </ToggleSwitch>
+
                     <AppBarButton x:Name="appbarbutton" Icon="Add" Label="New City" IsCompact="True" Command="{Binding AddCommand}"/>
                 </StackPanel>
             </CommandBar.Content>
@@ -59,8 +75,23 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="150"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="200"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <AutoSuggestBox Grid.Row="0" PlaceholderText="New City" MinWidth="400" Height="48" Margin="269,0,12,0" VerticalAlignment="Top" FontSize="25" QueryIcon="Find"  Text="{Binding AutoSuggestBoxText,Mode=TwoWay}" ItemsSource="{Binding Cities }">
+            <interact:Interaction.Behaviors>
+                <core:EventTriggerBehavior  EventName="TextChanged">
+                    <core:InvokeCommandAction Command="{Binding TextChangedCommand}"/>
+                    <!--InputConverter="{StaticResource ArgsConverter}"-->
+                </core:EventTriggerBehavior>
+                <core:EventTriggerBehavior  EventName="QuerySubmitted">
+                    <core:InvokeCommandAction Command="{Binding QuerySubmittedCommand}"/>
+                </core:EventTriggerBehavior>
+                <core:EventTriggerBehavior  EventName="SuggestionChosen">
+                    <core:InvokeCommandAction Command="{Binding SuggestionChosenCommand}"/>
+                </core:EventTriggerBehavior>
+            </interact:Interaction.Behaviors>
+        </AutoSuggestBox>
+
         <ListBox Grid.Row="1" x:Name="MyListbox" Background="HotPink" 
                  ItemsSource="{Binding ListWeatherData,Mode=TwoWay}"
                  SelectedIndex="{Binding ItemSelectedIndex, Mode=TwoWay}"

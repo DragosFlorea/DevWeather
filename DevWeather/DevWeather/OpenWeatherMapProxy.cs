@@ -1,4 +1,6 @@
 ﻿using DevWeather.Models;
+using DevWeather.Models.Forecast;
+using DevWeather.Models.GeoName;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -40,7 +42,7 @@ namespace DevWeather
         {
             var http = new HttpClient();
             HttpResponseMessage response = null;
-            var url =String.Format("http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1},gb&appid={2}&units={3}",lat,lon,token,units);
+            var url =String.Format("http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&appid={2}&units={3}",lat,lon,token, convertBoolToString(units));
            // var url = String.Format("http://api.openweathermap.org/data/2.5/weather?q={0},gb&appid={1}&units={2}", city, token, convertBoolToString(units));
             response = await http.GetAsync(url);
 
@@ -53,7 +55,23 @@ namespace DevWeather
 
             return data;
         }
+        public async static Task<Forecast_Root> GetForecast(double lat, double lon, bool units)
+        {
+            var http = new HttpClient();
+            HttpResponseMessage response = null;
+            var url = String.Format("http://api.openweathermap.org/data/2.5/forecast?lat={0}&lon={1}&appid={2}&units={3}", lat, lon, token, convertBoolToString(units));
+            //api.openweathermap.org / data / 2.5 / forecast ? q ={ city name},{ country code}    //// lat=35&lon=139 
+            response = await http.GetAsync(url);
 
+
+            var result = await response.Content.ReadAsStringAsync();
+            var serializer = new DataContractJsonSerializer(typeof(Forecast_Root));
+
+            var ms = new MemoryStream(Encoding.UTF8.GetBytes(result));
+            var data = (Forecast_Root)serializer.ReadObject(ms);
+
+            return data;
+        }
 
         private static string convertBoolToString(bool status)
         {

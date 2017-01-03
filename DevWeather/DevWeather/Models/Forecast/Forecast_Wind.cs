@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DevWeather.Models.GeoName
+namespace DevWeather.Models.Forecast
 {
     [DataContract]
-    public class Root_Geoname
+    public class Forecast_Wind
     {
         [DataMember]
-        public int totalResultsCount { get; set; }
+        public double speed { get; set; }
         [DataMember]
-        public ObservableCollection<Geoname> geonames { get; set; }
+        public double deg { get; set; }
     }
 }

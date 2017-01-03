@@ -11,6 +11,7 @@
      DataContext="{Binding MainListPageInstance, Source={StaticResource Locator}}">
     <Page.Resources>
         <converters:BooleanToStringTempConverter x:Key="BoolToUnits"/>
+        <converters:PrependStringConverter x:Key="PrependStringConverter"/>
     </Page.Resources>
     
     <Page.BottomAppBar>
@@ -22,60 +23,101 @@
         </CommandBar>
     </Page.BottomAppBar>
 
-    <Pivot x:Name="rootPivot" Background="HotPink" ItemsSource="{Binding MainListWeatherData,Mode=TwoWay}" SelectedIndex="{Binding ItemSelectedIndex}">
-        <Pivot.HeaderTemplate>
-            <DataTemplate x:DataType="vm:WeatherData_MainVM">
-                <TextBlock x:Name="txtDisplayLocation"
+        <Pivot x:Name="rootPivotList"  Background="HotPink" ItemsSource="{Binding MainListWeatherData,Mode=TwoWay}" SelectedIndex="{Binding ItemSelectedIndex,Mode=TwoWay}">
+            <Pivot.HeaderTemplate>
+                <DataTemplate x:DataType="vm:WeatherData_MainVM">
+                    <TextBlock x:Name="txtDisplayLocation"
                            Text="{x:Bind Reqlocation}"
                    HorizontalAlignment="Center"
                    Foreground="White"
                    FontSize="25"
                    TextWrapping="Wrap"/>
-            </DataTemplate>
-        </Pivot.HeaderTemplate>
-        <Pivot.ItemTemplate>
-            <DataTemplate x:DataType="vm:WeatherData_MainVM">
-                <StackPanel  Grid.Row="1">
-                    <StackPanel  VerticalAlignment="Center">
-                        <Grid>
-                            
-                            <Grid.RowDefinitions >
-                                <RowDefinition Height="60"></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions >
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" x:Name="txtDisplayTemp" 
-                   HorizontalAlignment="Right"
-                                   
-                                   Text="{x:Bind ReqWeather.main.temp}"
-                   Foreground="White"
-                   FontSize="52"/>
-                            <TextBlock Grid.Column="1" x:Name="txtDisplayUnits"
-                   HorizontalAlignment="Left"                                   
-                                   Text="{x:Bind Units_1, Converter={StaticResource BoolToUnits}}"
-                   Foreground="White"
-                   FontSize="52"/>
-                        </Grid>
-                        
-                        <TextBlock x:Name="txtDisplayDescrp" 
-                                   Text="{x:Bind ReqWeather.weather[0].description}"
-                   HorizontalAlignment="Center"
-                   Foreground="White"
-                   FontSize="35"/>
-
-                        <Image Name="ResultImage"
-                               Source="{x:Bind ReqIcon}"
-               Width="200" 
-               Height="200" 
-               HorizontalAlignment="Center"/>
-
+                </DataTemplate>
+            </Pivot.HeaderTemplate>
+            <Pivot.ItemTemplate>
+                <DataTemplate x:DataType="vm:WeatherData_MainVM">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="500"/>
+                        <RowDefinition Height="400"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel  Grid.Row="0">
+                        <StackPanel  VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="{x:Bind ReqWeather.main.temp}" Foreground="White" FontSize="52"/>
+                                <TextBlock Text="{x:Bind Units_1, Converter={StaticResource BoolToUnits}}" Foreground="White" FontSize="52"/>
+                            </StackPanel>
+                            <TextBlock x:Name="txtDisplayDescrp" Text="{x:Bind ReqWeather.weather[0].description}" HorizontalAlignment="Center"  Foreground="White"  FontSize="35"/>
+                            <Image Name="ResultImage" Source="{x:Bind ReqIcon}" Width="200" Height="200" HorizontalAlignment="Center"/>
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
+                    <ScrollViewer Grid.Row="1" HorizontalContentAlignment="Center" >
+                        <ItemsControl   ItemsSource="{Binding ReqForecast.list,Mode=TwoWay}"  >
+                            <ItemsControl.ItemTemplate  >
+                                <DataTemplate x:DataType="vm:WeatherData_MainVM">
+                                    <Grid BorderThickness="0,0,0,3" BorderBrush="White"  Width="Auto"  CornerRadius="0,0,40,40" HorizontalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="500"/>
+                                            <ColumnDefinition Width="500"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel  Grid.Column="0">
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="Wind Speed: "  HorizontalAlignment="Center"  Foreground="White"  FontSize="35"/>
+                                                <TextBlock Text="{Binding wind.speed}" HorizontalAlignment="Center"  Foreground="White"  FontSize="35"/>
+                                                <TextBlock Text="km/hr"  HorizontalAlignment="Center"  Foreground="White"  FontSize="35"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="Wind Angle: "  HorizontalAlignment="Center"  Foreground="White"  FontSize="35"/>
+                                                <TextBlock Text="{Binding wind.deg, Converter={StaticResource PrependStringConverter} }"  HorizontalAlignment="Center"  Foreground="White"  FontSize="35"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="Humidity: "  HorizontalAlignment="Center"  Foreground="White"  FontSize="35"/>
+                                                <TextBlock Text="{Binding main.humidity}" HorizontalAlignment="Center"  Foreground="White"  FontSize="35"/>
+                                                <TextBlock Text="%"  HorizontalAlignment="Center"  Foreground="White"  FontSize="35"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="Ground Level: "  HorizontalAlignment="Center"  Foreground="White"  FontSize="35"/>
+                                                <TextBlock Text="{Binding main.grnd_level }" HorizontalAlignment="Center"  Foreground="White"  FontSize="35"/>
+                                            </StackPanel>
+                                            
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" >
+                                            <TextBlock Text="{Binding main.temp_min, Converter={StaticResource PrependStringConverter}}" 
+                                                       HorizontalAlignment="Center"  
+                                                       Foreground="White"  
+                                                       FontSize="35"/>
+                                            <TextBlock Text="{Binding weather[0].description}"
+                                                       HorizontalAlignment="Center"  
+                                                       Foreground="White"  
+                                                       FontSize="35"/>
+                                            <TextBlock Text="{Binding dt}"
+                                                       HorizontalAlignment="Center"  
+                                                       Foreground="White"  
+                                                       FontSize="35"/>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="Chance of Snow: "  HorizontalAlignment="Center"  Foreground="White"  FontSize="35"/>
+                                                <TextBlock Text="{Binding snow.__invalid_name__3h}"
+                                                       HorizontalAlignment="Center"  
+                                                       Foreground="White"  
+                                                       FontSize="35"/>
+                                            </StackPanel>
+                                            
+                                        </StackPanel>
+                                    </Grid>
+
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            <!--<ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <ScrollViewer ScrollViewer.HorizontalScrollMode="Enabled" ScrollViewer.HorizontalScrollBarVisibility="Visible" ></ScrollViewer>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>-->
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                </Grid>
             </DataTemplate>
-        </Pivot.ItemTemplate>
-       
-   </Pivot>
+            </Pivot.ItemTemplate>
+        </Pivot>
 
 </Page>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DevWeather.Models.Forecast;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -32,5 +33,9 @@ namespace DevWeather.Models
         public string name { get; set; }
         [DataMember]
         public int cod { get; set; }
+
+
+     
+
     }
 }

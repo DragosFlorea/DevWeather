@@ -22,8 +22,20 @@ namespace DevWeather.Models
             get { return locationList; }
             set
             {
-                locationList = value;            
+                    locationList = value;         
             }
+        }
+
+        public static async Task CreateFileLocation()
+        {
+            StorageFile userListofLocations ;
+            try { userListofLocations = await ApplicationData.Current.LocalFolder.GetFileAsync("userListofLocation"); }
+            catch
+            {               
+                    userListofLocations = await ApplicationData.Current.LocalFolder.CreateFileAsync("userListofLocation", CreationCollisionOption.ReplaceExisting);
+            } 
+            
+            
         }
 
         public async Task SaveListofLocation()
@@ -41,18 +53,26 @@ namespace DevWeather.Models
         }
         private async Task<ObservableCollection<string>> readListofLocation()
         {
-            var Serializer = new DataContractSerializer(typeof(ObservableCollection<string>));
-            using (var stream = await ApplicationData.Current.LocalFolder.OpenStreamForReadAsync("userListofLocation"))
-            {
-                var list = (ObservableCollection<string>)Serializer.ReadObject(stream);
-                return list;
+
+            var item = await ApplicationData.Current.LocalFolder.TryGetItemAsync("userListofLocation");
+            if(item!=null)
+            { 
+                var Serializer = new DataContractSerializer(typeof(ObservableCollection<string>));
+                using (var stream = await ApplicationData.Current.LocalFolder.OpenStreamForReadAsync("userListofLocation"))
+                    {
+                    try { var list = (ObservableCollection<string>)Serializer.ReadObject(stream); return list; }
+                    catch { return null; }
+                        
+                    
+                    }
             }
+            return null;
 
         }
 
         public async Task getDataFromFile()
         {
-            locationList = await readListofLocation();
+            LocationList = await readListofLocation();
         }
     
     }

@@ -7,13 +7,32 @@
     <RootPropertyPathName Name="ListPageInstance" />
     <RootPropertyPathName Name="IsVisible" />
     <RootPropertyPathName Name="AddCommand" />
-    <RootPropertyPathName Name="Location" />
     <RootPropertyPathName Name="Requnits" />
+    <RootPropertyPathName Name="ToggleSwitchCommand" />
     <RootPropertyPathName Name="ListWeatherData" />
     <RootPropertyPathName Name="ItemSelectedIndex" />
+    <RootPropertyPathName Name="AutoSuggestBoxText" />
+    <RootPropertyPathName Name="Cities" />
+    <RootPropertyPathName Name="SuggestionChosenCommand" />
+    <RootPropertyPathName Name="QuerySubmittedCommand" />
+    <RootPropertyPathName Name="TextChangedCommand" />
     <RootPropertyPathName Name="MainListPageInstance" />
     <RootPropertyPathName Name="NavToLocationsCommand" />
     <RootPropertyPathName Name="MainListWeatherData" />
+    <RootPropertyPathName Name="ReqForecast" />
+    <RootPropertyPathName Name="list" />
+    <RootPropertyPathName Name="snow" />
+    <RootPropertyPathName Name="__invalid_name__3h" />
+    <RootPropertyPathName Name="dt" />
+    <RootPropertyPathName Name="weather" />
+    <RootPropertyPathName Name="description" />
+    <RootPropertyPathName Name="main" />
+    <RootPropertyPathName Name="temp_min" />
+    <RootPropertyPathName Name="grnd_level" />
+    <RootPropertyPathName Name="humidity" />
+    <RootPropertyPathName Name="wind" />
+    <RootPropertyPathName Name="deg" />
+    <RootPropertyPathName Name="speed" />
   </Roots.PropertyPathNames>
   <Roots.RootTypes>
     <RootType FullName="Windows.UI.Xaml.Application">
@@ -34,6 +53,7 @@
     </RootType>
     <RootType FullName="Microsoft.Xaml.DirectUI.ProxyTypes.StaticResourceExtension" />
     <RootType FullName="DevWeather.Converters.BooleanToVisibilityConverter" />
+    <RootType FullName="DevWeather.Converters.AutoSuggestQueryParameterConverter" />
     <RootType FullName="Windows.UI.Xaml.DataTemplate">
       <RootProperty Name="Template" />
     </RootType>
@@ -51,6 +71,11 @@
       <RootProperty Name="Children" />
       <RootProperty Name="Background" />
       <RootProperty Name="RowDefinitions" />
+      <RootProperty Name="BorderThickness" />
+      <RootProperty Name="BorderBrush" />
+      <RootProperty Name="Width" />
+      <RootProperty Name="CornerRadius" />
+      <RootProperty Name="HorizontalAlignment" />
       <RootMethod Name="GetColumn" />
       <RootMethod Name="SetColumn" />
       <RootMethod Name="GetRow" />
@@ -68,8 +93,25 @@
       <RootProperty Name="Name" />
       <RootProperty Name="HorizontalAlignment" />
     </RootType>
-    <RootType FullName="Windows.UI.Xaml.Controls.RadioButton">
+    <RootType FullName="Windows.UI.Xaml.Controls.Primitives.ToggleButton">
       <RootProperty Name="Visibility" />
+      <RootProperty Name="Height" />
+      <RootProperty Name="Width" />
+    </RootType>
+    <RootType FullName="Microsoft.Xaml.Interactivity.Interaction">
+      <RootMethod Name="GetBehaviors" />
+      <RootMethod Name="SetBehaviors" />
+    </RootType>
+    <RootType FullName="Microsoft.Xaml.Interactions.Core.EventTriggerBehavior">
+      <RootProperty Name="EventName" />
+      <RootProperty Name="Actions" />
+    </RootType>
+    <RootType FullName="Microsoft.Xaml.Interactions.Core.InvokeCommandAction">
+      <RootProperty Name="Command" />
+      <RootProperty Name="CommandParameter" />
+    </RootType>
+    <RootType FullName="Microsoft.Xaml.DirectUI.ProxyTypes.BindExtension">
+      <RootProperty Name="Converter" />
     </RootType>
     <RootType FullName="Windows.UI.Xaml.Controls.TextBlock">
       <RootProperty Name="Text" />
@@ -80,9 +122,6 @@
       <RootProperty Name="HorizontalAlignment" />
       <RootProperty Name="Foreground" />
     </RootType>
-    <RootType FullName="Microsoft.Xaml.DirectUI.ProxyTypes.BindExtension">
-      <RootProperty Name="Converter" />
-    </RootType>
     <RootType FullName="Windows.UI.Xaml.Controls.CommandBar">
       <RootProperty Name="Content" />
       <RootProperty Name="PrimaryCommands" />
@@ -92,16 +131,6 @@
       <RootProperty Name="OffContent" />
       <RootProperty Name="OnContent" />
       <RootProperty Name="IsOn" />
-      <RootEvent Name="Toggled" />
-    </RootType>
-    <RootType FullName="Windows.UI.Xaml.Controls.TextBox">
-      <RootProperty Name="PlaceholderText" />
-      <RootProperty Name="MinWidth" />
-      <RootProperty Name="Height" />
-      <RootProperty Name="Margin" />
-      <RootProperty Name="VerticalAlignment" />
-      <RootProperty Name="FontSize" />
-      <RootProperty Name="Text" />
     </RootType>
     <RootType FullName="Windows.UI.Xaml.Controls.AppBarButton">
       <RootProperty Name="Icon" />
@@ -119,6 +148,17 @@
     <RootType FullName="Windows.UI.Xaml.Controls.RowDefinition">
       <RootProperty Name="Height" />
     </RootType>
+    <RootType FullName="Windows.UI.Xaml.Controls.AutoSuggestBox">
+      <RootProperty Name="PlaceholderText" />
+      <RootProperty Name="MinWidth" />
+      <RootProperty Name="Height" />
+      <RootProperty Name="Margin" />
+      <RootProperty Name="VerticalAlignment" />
+      <RootProperty Name="FontSize" />
+      <RootProperty Name="QueryIcon" />
+      <RootProperty Name="Text" />
+      <RootProperty Name="ItemsSource" />
+    </RootType>
     <RootType FullName="Windows.UI.Xaml.Controls.ListBox">
       <RootProperty Name="Background" />
       <RootProperty Name="ItemsSource" />
@@ -127,11 +167,20 @@
     </RootType>
     <RootType FullName="DevWeather.Views.AddNewLoc_Page" />
     <RootType FullName="DevWeather.Converters.BooleanToStringTempConverter" />
+    <RootType FullName="DevWeather.Converters.PrependStringConverter" />
     <RootType FullName="Windows.UI.Xaml.Controls.Pivot">
       <RootProperty Name="Background" />
       <RootProperty Name="ItemsSource" />
       <RootProperty Name="SelectedIndex" />
       <RootProperty Name="HeaderTemplate" />
+      <RootProperty Name="ItemTemplate" />
+    </RootType>
+    <RootType FullName="Windows.UI.Xaml.Controls.ScrollViewer">
+      <RootProperty Name="HorizontalContentAlignment" />
+      <RootProperty Name="Content" />
+    </RootType>
+    <RootType FullName="Windows.UI.Xaml.Controls.ItemsControl">
+      <RootProperty Name="ItemsSource" />
       <RootProperty Name="ItemTemplate" />
     </RootType>
     <RootType FullName="DevWeather.Views.MainPage" />

@@ -95,12 +95,27 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\AutoSuggestQueryParameterConverter.cs" />
     <Compile Include="Converters\BooleanToStringTempConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\InvertedBoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\PrependStringConverter.cs" />
+    <Compile Include="Models\Forecast\Forecast_Coord.cs" />
+    <Compile Include="Models\Forecast\Forecast_Clouds.cs" />
+    <Compile Include="Models\Forecast\Forecast5day_City.cs" />
+    <Compile Include="Models\Forecast\Forecast_Rain.cs" />
+    <Compile Include="Models\Forecast\Forecast_Root.cs" />
+    <Compile Include="Models\Forecast\Forecast_Snow.cs" />
+    <Compile Include="Models\Forecast\Forecast_Sys.cs" />
+    <Compile Include="Models\Forecast\Forecast_Sys2.cs" />
+    <Compile Include="Models\Forecast\Forecast_Weather.cs" />
+    <Compile Include="Models\Forecast\Forecast_Wind.cs" />
     <Compile Include="Models\GeoName\Geoname.cs" />
     <Compile Include="Models\GeoName\Root_Geoname.cs" />
+    <Compile Include="Models\Forecast\Forecast_List.cs" />
     <Compile Include="Models\LocationsToStorage.cs" />
+    <Compile Include="Models\Forecast\Forecast_Main.cs" />
+    <Compile Include="ProcessData.cs" />
     <Compile Include="ViewModels\WeatherData_MainVM.cs" />
     <Compile Include="Views\AddNewLoc_Page.xaml.cs">
       <DependentUpon>AddNewLoc_Page.xaml</DependentUpon>
@@ -172,6 +187,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <SDKReference Include="BehaviorsXamlSDKManaged, Version=12.0">
+      <Name>Behaviors SDK %28XAML%29</Name>
+    </SDKReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

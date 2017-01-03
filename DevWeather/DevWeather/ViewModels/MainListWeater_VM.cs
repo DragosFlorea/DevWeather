@@ -1,4 +1,5 @@
 ﻿using DevWeather.Models;
+using DevWeather.Models.Forecast;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Views;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace DevWeather.ViewModels
 {
@@ -18,6 +20,7 @@ namespace DevWeather.ViewModels
         private ObservableCollection<WeatherData_MainVM> mainlistWeatherData = new ObservableCollection<WeatherData_MainVM>();
         private ListWeatherData_VM ListPageInstance = ServiceLocator.Current.GetInstance<ListWeatherData_VM>();
         private INavigationService _navigationService;
+        
         public ObservableCollection<WeatherData_MainVM> MainListWeatherData
         {
             get { return mainlistWeatherData; }
@@ -27,18 +30,18 @@ namespace DevWeather.ViewModels
                 RaisePropertyChanged("MainListWeatherData");
             }
         }
-        private int itemSelectedIndex;
+        private int _itemSelectedIndex;
         public int ItemSelectedIndex
         {
-            get { return itemSelectedIndex; }
+            get { return _itemSelectedIndex; }
             set
             {
-                itemSelectedIndex = value;
+                _itemSelectedIndex = value;
                 RaisePropertyChanged("ItemSelectedIndex");
             }
         }
         public void SetpivotIndex(int index)
-        { itemSelectedIndex=index; }
+        { _itemSelectedIndex = index; }
 
         private LocationsToStorage locToStorage = new LocationsToStorage();
 
@@ -60,53 +63,74 @@ namespace DevWeather.ViewModels
             set { readFromFile = value; }
         }
 
-      
-
         public void setUnits(bool unit)
         {
-            if (mainlistWeatherData != null && mainlistWeatherData.Count != 0)
+            if (MainListWeatherData != null && MainListWeatherData.Count != 0)
             {
-                foreach (var vm in mainlistWeatherData)
+                foreach (var vm in MainListWeatherData)
                 {
                     vm.Units_1 = unit;
                 }
             }
         }
-
-        public async Task init()
+        private object _geolocation = new object();
+        public object Geolocation
         {
-            LocationManager x = new LocationManager();
-            var location = await x.GetPosition();
-
-            if (readFromFile == false)
-            {
-                await locToStorage.getDataFromFile();
-                readFromFile = true;
-            }
-            mainlistWeatherData.Clear();
-                foreach (var item in locToStorage.LocationList)
-                {
-                    var newItem = new WeatherData_MainVM(new WeatherData(item));
-                    newItem.ReqWeather = await requestWeather(newItem, newItem.Units_1);
-                    mainlistWeatherData.Add(newItem);
-                }
-            
+            get { return _geolocation; }
+            set { _geolocation = value; }
         }
+
+        public async Task Updatedata()
+        {
+            WeatherData_MainVM newItem = new WeatherData_MainVM(new WeatherData());
+            MainListWeatherData.Clear();
+            var location = await LocationManager.GetPosition();
+            Geolocation = await ProcessData.setGeolocation(location.Coordinate.Latitude, location.Coordinate.Longitude,  "Main", ListPageInstance.Requnits);           
+            MainListWeatherData.Add((WeatherData_MainVM)Geolocation);
+            ReadFromFile = await ProcessData.init();
+            if (ReadFromFile)
+            {
+                foreach (var item in ProcessData.LocToStorage.LocationList)
+                {
+                    newItem = new WeatherData_MainVM(new WeatherData(item));
+                    newItem = (WeatherData_MainVM)await ProcessData.GetWeatherAndForecast(item, 0, 0, ListPageInstance.Requnits);
+                    MainListWeatherData.Add(newItem);
+                }
+                setUnits(ListPageInstance.Requnits);
+            }
+        }
+        private bool firstuse = false;
+        public async Task FirstInit()
+        {
+            if (!firstuse)
+            {
+                firstuse = true;
+                await LocationsToStorage.CreateFileLocation();
+                WeatherData_MainVM newItem = new WeatherData_MainVM(new WeatherData());
+                MainListWeatherData.Clear();
+                var location = await LocationManager.GetPosition();
+                this.Geolocation = await ProcessData.setGeolocation(location.Coordinate.Latitude, location.Coordinate.Longitude, "Main", ListPageInstance.Requnits);
+                ListPageInstance.LIST_Geolocation = await ProcessData.setGeolocation(location.Coordinate.Latitude, location.Coordinate.Longitude, "Main", ListPageInstance.Requnits);
+                MainListWeatherData.Add((WeatherData_MainVM)Geolocation);
+                ReadFromFile = await ProcessData.init();
+                if (ReadFromFile)
+                {
+                    foreach (var item in ProcessData.LocToStorage.LocationList)
+                    {
+                        newItem = new WeatherData_MainVM(new WeatherData(item));
+                        newItem = (WeatherData_MainVM)await ProcessData.GetWeatherAndForecast(item, 0, 0, ListPageInstance.Requnits);
+                        MainListWeatherData.Add(newItem);
+                    }
+                    setUnits(ListPageInstance.Requnits);
+                }            
+            }
+           
+        }
+        
         public MainListWeater_VM( INavigationService navigationService)
         {
             _navigationService = navigationService;
             this.NavToLocationsCommand = new RelayCommand(Navigate, CanNavigateToLocations);
-        }
-
-        public async Task<RootObject> requestWeather(WeatherData_MainVM item, bool units)
-        {
-            item.ReqWeather = await OpenWeatherMapProxy.GetWeather(item.Reqlocation, units);
-            return item.ReqWeather;
-        }
-        public async Task<RootObject> requestWeather_byCoord(WeatherData_MainVM item, bool units)
-        {
-            item.ReqWeather = await OpenWeatherMapProxy.GetWeather_byCoord(15,4323, units);
-            return item.ReqWeather;
         }
 
         public ICommand NavToLocationsCommand { get; }

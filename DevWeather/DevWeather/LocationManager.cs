@@ -1,4 +1,5 @@
 ﻿using DevWeather.Models.GeoName;
+using DevWeather.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +14,7 @@ namespace DevWeather
 {
     public class LocationManager
     {
-        public async Task<Geoposition> GetPosition()
+        public async static Task<Geoposition> GetPosition()
         {
             Geoposition pos = null ;
             try
@@ -59,5 +60,6 @@ namespace DevWeather
 
             return data;
         }
+
     }
 }
